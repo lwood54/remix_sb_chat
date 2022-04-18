@@ -19,13 +19,20 @@ export default () => {
   const { channels } = useLoaderData();
 
   return (
-    <div>
-      {channels.map((channel: Channel) => (
-        <p key={channel.id} className="text-3xl">
-          <Link to={`/channels/${channel.id}`}>{channel.title}</Link>
-        </p>
-      ))}
-      <Outlet />
+    <div className="h-screen flex">
+      <div className="bg-gray-800 text-white w-52 p-8">
+        {channels.map((channel: Channel) => (
+          <p key={channel.id} className="">
+            <Link to={`/channels/${channel.id}`}>
+              <span className="text-gray-400 mr-1">#</span>
+              {channel.title}
+            </Link>
+          </p>
+        ))}
+      </div>
+      <div className="flex-1 p-8 flex flex-col">
+        <Outlet />
+      </div>
     </div>
   );
 };

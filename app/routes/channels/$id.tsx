@@ -65,17 +65,26 @@ export default () => {
 
   return (
     <>
-      <pre>{JSON.stringify(channel, null, 2)}</pre>
-      <div>
-        Messages:
-        {messages.map((m) => (
-          <p key={m.id}>{m.content}</p>
-        ))}
+      <div className="gap-4 flex flex-col border-b border-gray-300 pb-6 mb-6">
+        <h1 className="text-2xl uppercase">{channel.title}</h1>
+        <p className="text-gray-600">{channel.description}</p>
       </div>
-      <Form method="post">
-        <input name="content" />
+      {/* <pre className="flex-1">{JSON.stringify(channel, null, 2)}</pre> */}
+      <div className="flex flex-1 flex-col p-2 overflow-auto">
+        <div className="mt-auto">
+          {messages.map((m) => (
+            <p key={m.id} className="p-2">
+              {m.content}
+            </p>
+          ))}
+        </div>
+      </div>
+      <Form method="post" className="flex">
+        <input name="content" className="border border-gray-200 px-2 flex-1" />
         <input type="hidden" value={channel.id} name="channelId" />
-        <button type="submit">Send!</button>
+        <button type="submit" className="px-4 py-2 ml-4 bg-blue-200">
+          Send!
+        </button>
       </Form>
     </>
   );
