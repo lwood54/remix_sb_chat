@@ -1,3 +1,4 @@
+import * as React from "react";
 import type { MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -6,10 +7,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useFetcher,
   useLoaderData,
 } from "@remix-run/react";
 
 import styles from "~/styles/app.css";
+import supabase from "~/utils/supabase";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -33,6 +36,30 @@ export const loader = () => {
 
 export default function App() {
   const { env } = useLoaderData();
+  const { submit } = useFetcher();
+
+  React.useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.access_token) {
+        submit(
+          {
+            accessToken: session?.access_token,
+          },
+          {
+            method: "post",
+            action: "/auth/login",
+          }
+        );
+      }
+      // TODO: figure out why this is not triggering on logout
+      // if (event === "SIGNED_OUT") {
+      //   fetcher.submit(null, {
+      //     method: "post",
+      //     action: "/auth/logout",
+      //   });
+      // }
+    });
+  }, [submit]);
 
   return (
     <html lang="en">

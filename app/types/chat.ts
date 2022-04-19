@@ -5,8 +5,15 @@ export type Channel = {
   title: string;
 };
 
+export type Profile = {
+  email: string;
+  id: string;
+  username: string;
+};
+
 export type Message = {
-  channel_id: string;
   content: string;
   id: string;
+  likes: number;
+  profiles: Profile;
 };

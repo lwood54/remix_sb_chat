@@ -1,22 +1,20 @@
 import { Link } from "@remix-run/react";
+import React from "react";
 import supabase from "~/utils/supabase";
 
 export default () => {
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
+    const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email")?.toString();
     const password = formData.get("password")?.toString();
-    console.log({
+    const { error } = await supabase.auth.signIn({
       email,
       password,
     });
-
-    const { user, error } = await supabase.auth.signIn({
-      email,
-      password,
-    });
-    console.log({ user, error });
+    if (error) {
+      console.log(error.message);
+    }
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-gray-800 text-white gap-2">

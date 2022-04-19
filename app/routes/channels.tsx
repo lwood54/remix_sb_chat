@@ -1,8 +1,17 @@
-import { useLoaderData, Link, Outlet } from "@remix-run/react";
+import * as React from "react";
+import { useLoaderData, Link, Outlet, useLocation } from "@remix-run/react";
 import type { Channel } from "~/types/chat";
 import supabase from "~/utils/supabase";
+import type { LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import checkAndSetAuth from "~/utils/checkAndSetAuth";
 
-export const loader = async () => {
+export const loader: LoaderFunction = async (context) => {
+  const { user } = await checkAndSetAuth(context);
+  if (!user) {
+    return redirect("/login");
+  }
+
   const { data: channels, error } = await supabase
     .from("channels")
     .select("id, title");
@@ -17,8 +26,8 @@ export const loader = async () => {
 
 export default () => {
   const { channels } = useLoaderData();
-
-  console.log(supabase.auth.user());
+  const { pathname } = useLocation();
+  const isChannePage = pathname === "/channels" || pathname === "/channels/";
 
   return (
     <div className="h-screen flex">
@@ -33,6 +42,11 @@ export default () => {
         ))}
       </div>
       <div className="flex-1 p-8 flex flex-col">
+        {isChannePage && (
+          <div className="flex-1 flex items-center justify-center text-center">
+            <span className="mr-4">👈</span> Choose a channel!
+          </div>
+        )}
         <Outlet />
       </div>
     </div>
